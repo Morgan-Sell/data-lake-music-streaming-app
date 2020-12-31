@@ -131,3 +131,4 @@ dmypy.json
 # Local files
 dl.cfg
 /data
+/etl_output
