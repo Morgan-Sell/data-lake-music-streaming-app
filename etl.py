@@ -23,16 +23,17 @@ def create_spark_session():
 
 def process_song_data(spark, input_data, output_data):
     # get filepath to song data file
-    song_data = 
+    # Currently set for local testing
+    song_data = input_data + 'local_song_data/song_data/*/*/*/*.json'
     
     # read song data file
-    df = 
+    df = spark.read.json(song_data)
 
     # extract columns to create songs table
-    songs_table = 
+    songs_table = df.select('*')
     
     # write songs table to parquet files partitioned by year and artist
-    songs_table
+    songs_table.write.partitionBy('year', 'artist_name').mode('overwrite').parquet(songs.parquet)
 
     # extract columns to create artists table
     artists_table = 
@@ -43,10 +44,11 @@ def process_song_data(spark, input_data, output_data):
 
 def process_log_data(spark, input_data, output_data):
     # get filepath to log data file
-    log_data =
+    # Currently set for local testing.
+    log_data = input_data + '/local_log_data'
 
     # read log data file
-    df = 
+    df = spark.read.json(log_data)
     
     # filter by actions for song plays
     df = 
@@ -83,8 +85,10 @@ def process_log_data(spark, input_data, output_data):
 
 def main():
     spark = create_spark_session()
-    input_data = "s3a://udacity-dend/"
-    output_data = ""
+    # change for local testing.
+    # use "s3a://udacity-dend/" when connecting to AWS.
+    input_data = "data/"
+    output_data = "etl_output/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
