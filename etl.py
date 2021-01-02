@@ -4,6 +4,8 @@ import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
+from pyspark import SparkContext, SparkConf
+
 
 
 config = configparser.ConfigParser()
@@ -24,13 +26,18 @@ def create_spark_session():
 def process_song_data(spark, input_data, output_data):
     # get filepath to song data file
     # Currently set for local testing
+    
+    
+    
+    
+    
     song_data = input_data + 'local_song_data/song_data/*/*/*/*.json'
     
     # read song data file
     df = spark.read.json(song_data)
 
     # extract columns to create songs table
-    songs_table = df.select('*')
+    songs_table = songs.select('song_id', 'title', 'artist_id', 'year', 'duration')
     
     # write songs table to parquet files partitioned by year and artist
     songs_table.write.partitionBy('year', 'artist_name').mode('overwrite').parquet(songs.parquet)
