@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, col
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
 from pyspark import SparkContext, SparkConf
-
+from pyspark.sql.types import TimestampType, DateType
 
 
 config = configparser.ConfigParser()
@@ -23,14 +23,15 @@ def create_spark_session():
     return spark
 
 
+def format_datetime(ts):
+    '''
+    Returns integer as datetime object.
+    '''
+    return datetime.fromtimestamp(ts / 1000.0)
+
 def process_song_data(spark, input_data, output_data):
     # get filepath to song data file
     # Currently set for local testing
-    
-    
-    
-    
-    
     song_data = input_data + 'local_song_data/song_data/*/*/*/*.json'
     
     # read song data file
@@ -43,10 +44,10 @@ def process_song_data(spark, input_data, output_data):
     songs_table.write.partitionBy('year', 'artist_name').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
     
     # extract columns to create artists table
-    artists_table = 
+    artists_table = df['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
     
     # write artists table to parquet files
-    artists_table
+    artists_table.write.parquet(os.path.join(output_data, 'artists'))
 
 
 def process_log_data(spark, input_data, output_data):
@@ -58,28 +59,36 @@ def process_log_data(spark, input_data, output_data):
     df = spark.read.json(log_data)
     
     # filter by actions for song plays
-    df = 
+    df = df[df['page'] == 'NextSong']
 
     # extract columns for users table    
-    users_table = 
+    users_table = df['userId', 'firstName', 'lastName', 'gender', 'level']
     
     # write users table to parquet files
-    users_table
+    users_table.write.parquet(os.path.join(output_data, 'users'))
 
     # create timestamp column from original timestamp column
-    get_timestamp = udf()
-    df = 
+    get_timestamp = udf(lambda dt: format_datetime(int(dt)), TimestampType())
+    df = df.withColumn('timestamp', get_timestamp(df.ts))
     
     # create datetime column from original timestamp column
-    get_datetime = udf()
-    df = 
+    get_datetime = udf(lambda dt: format_datetime(int(dt)), DateType())
+    df = df.withColumn('datetime', get_datetime(df.ts))
     
     # extract columns to create time table
-    time_table = 
+    df = df.withColumn('day_of_week', date_format(col('timestamp'), 'E'))
+    time_table = df.select(col('timestamp').alias('start_time'),
+                           hour(df.timestamp).alias('hour'),
+                           dayofmonth(df.timestamp).alias('day'),
+                           weekofyear(df.timestamp).alias('week'),
+                           month(df.timestamp).alias('month'),
+                           year(df.timestamp).alias('year'),
+                           'day_of_week')
     
     # write time table to parquet files partitioned by year and month
-    time_table
-
+    time_table.write.partitionBy('year', 'month').mode('overwrite').parquet(os.path.join(output_data, 'time'))
+    
+    
     # read in song data to use for songplays table
     song_df = 
 
