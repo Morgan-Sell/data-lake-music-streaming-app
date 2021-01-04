@@ -132,3 +132,4 @@ dmypy.json
 dl.cfg
 /data
 /etl_output
+/output
