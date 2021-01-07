@@ -88,15 +88,42 @@ def process_log_data(spark, input_data, output_data):
     # write time table to parquet files partitioned by year and month
     time_table.write.partitionBy('year', 'month').mode('overwrite').parquet(os.path.join(output_data, 'time'))
     
-    
+  
     # read in song data to use for songplays table
-    song_df = 
+    song_df = spark.read.json('data/local_song_data/song_data/*/*/*/*.json')
 
+    # create SQL tables.
+    df.createOrReplaceTempView('log_data_table')
+    song_df.createOrReplaceTempView('song_data_table')
+    
     # extract columns from joined song and log datasets to create songplays table 
-    songplays_table = 
+    songplays_table = spark.sql('''
+                            SELECT
+                                l.timestamp AS start_time,
+                                l.userId,
+                                l.level,
+                                s.song_id,
+                                s.artist_id,
+                                l.sessionId,
+                                l.location,
+                                l.userAgent
+                            FROM log_data_table l
+                                LEFT JOIN song_data_table s
+                                    ON l.song = s.title
+                            ''')
+    
+    # add sequential ID for songplay_id
+    songplays_table = songplays_table.withColumn('mono_increasing_id', monotonically_increasing_id())
+    window = Window.orderBy(col('mono_increasing_id'))
+    songplays_table = songplays_table.withColumn('songplay_id', row_number().over(window))
+    songplays_table = songplays_table.drop('mono_increasing_id')
 
+    # create "month" and "year" columns for partitioning.
+    songplays_table = songplays_table.withColumn('month', month(col('start_time')))
+    songplays_table = songplays_table.withColumn('year', year(col('start_time')))
+    
     # write songplays table to parquet files partitioned by year and month
-    songplays_table
+    songplays_table.write.partitionBy('year', 'month').mode('overwrite').parquet(os.path.join(output_data, 'songplays'))
 
 
 def main():
