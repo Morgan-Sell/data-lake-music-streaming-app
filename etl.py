@@ -133,8 +133,8 @@ def main():
     spark = create_spark_session()
     # change for local testing.
     # use "s3a://udacity-dend/" when connecting to AWS.
-    input_data = "data/"
-    output_data = "etl_output/test_2/"
+    input_data = "s3a://udacity-dend/"
+    output_data = "s3a://udacity-data-lake-project/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
