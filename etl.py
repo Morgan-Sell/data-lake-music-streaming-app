@@ -65,6 +65,7 @@ def process_log_data(spark, input_data, output_data):
 
     # extract columns for users table    
     users_table = df['userId', 'firstName', 'lastName', 'gender', 'level']
+    users_table = users_table.dropDuplicates(['userId'])
     
     # write users table to parquet files
     users_table.write.parquet(os.path.join(output_data, 'users'))
@@ -133,7 +134,7 @@ def main():
     # change for local testing.
     # use "s3a://udacity-dend/" when connecting to AWS.
     input_data = "data/"
-    output_data = "etl_output/test_1/"
+    output_data = "etl_output/test_2/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
