@@ -1,8 +1,10 @@
 import configparser
 from datetime import datetime
 import os
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, col
+import numpy as np
+import pandas as pd
+from pyspark.sql import SparkSession, Window
+from pyspark.sql.functions import udf, col, monotonically_increasing_id, row_number
 from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
 from pyspark import SparkContext, SparkConf
 from pyspark.sql.types import TimestampType, DateType
@@ -11,8 +13,8 @@ from pyspark.sql.types import TimestampType, DateType
 config = configparser.ConfigParser()
 config.read('dl.cfg')
 
-os.environ['AWS_ACCESS_KEY_ID']=config['AWS_ACCESS_KEY_ID']
-os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_SECRET_ACCESS_KEY']
+os.environ['AWS_ACCESS_KEY_ID']=config['AWS']['AWS_ACCESS_KEY_ID']
+os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS']['AWS_SECRET_ACCESS_KEY']
 
 
 def create_spark_session():
@@ -41,7 +43,7 @@ def process_song_data(spark, input_data, output_data):
     songs_table = df['song_id', 'title', 'artist_id', 'year', 'duration']
     
     # write songs table to parquet files partitioned by year and artist
-    songs_table.write.partitionBy('year', 'artist_name').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
+    songs_table.write.partitionBy('year', 'artist_id').mode('overwrite').parquet(os.path.join(output_data, 'songs'))
     
     # extract columns to create artists table
     artists_table = df['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude']
@@ -131,7 +133,7 @@ def main():
     # change for local testing.
     # use "s3a://udacity-dend/" when connecting to AWS.
     input_data = "data/"
-    output_data = "etl_output/"
+    output_data = "etl_output/test_1/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
