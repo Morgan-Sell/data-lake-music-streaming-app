@@ -18,5 +18,5 @@ The data is now "semi-schematized". The data is schematized as it is being proce
 The workflow below is a high-level sypnosis of how we migrating from a data warehouse to a data lake.
 
 <p align="center">
-    <img src="https://github.com/Morgan-Sell/data-lake-music-streaming-app/blob/main/img/robot_etl_flow_chart.jpg" width="800" height="250">
+    <img src="https://github.com/Morgan-Sell/data-lake-music-streaming-app/blob/main/img/etl_flow_chart.png" width="600" height="150">
 </p>
