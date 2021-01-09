@@ -17,7 +17,7 @@ The data is now "semi-schematized". The data is schematized as it is being proce
 The workflow below is a high-level synopsis of how we migrating from a data warehouse to a data lake.
 
 <p align="center">
-    <img src="https://github.com/Morgan-Sell/data-lake-music-streaming-app/blob/main/img/etl_flow_chart.png" width="700" height="180">
+    <img src="https://github.com/Morgan-Sell/data-lake-music-streaming-app/blob/main/img/etl_flow_chart.png" width="750" height="220">
 </p>
 
 # Data Lake Design
@@ -25,9 +25,9 @@ The primary change to Sparkify's database management system is that data is dist
 
 Consequently, we partitioned the following tables by the corresponding attributes:
 
-- songs_table - year and artist_id
-- time_table - year and month
-- songsplay_table - year and month
+- **songs_table** - year and artist_id
+- **time_table** - year and month
+- **songsplay_table** - year and month
 
 # Conclusion
 With Sparkify's data lake, the company is now able to focus on developing the most personalized music/media streaming experience available.Users' recommended playlists will incorporate new music as released by artists and Top 100 hits will no longer plug the playlist gaps. Sparkify's recommender system will introduce users to the music they never knew existed and from places of the world that they only know from books and movies.
