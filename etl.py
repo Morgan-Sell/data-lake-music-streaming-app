@@ -10,11 +10,11 @@ from pyspark import SparkContext, SparkConf
 from pyspark.sql.types import TimestampType, DateType
 
 
-config = configparser.ConfigParser()
-config.read('dl.cfg')
+#config = configparser.ConfigParser()
+#config.read('dl.cfg')
 
-os.environ['AWS_ACCESS_KEY_ID']=config['AWS_CREDENTIALS']['AWS_ACCESS_KEY_ID']
-os.environ['AWS_SECRET_ACCESS_KEY']=config['AWS_CREDENTIALS']['AWS_SECRET_ACCESS_KEY']
+os.environ['AWS_ACCESS_KEY_ID']='<INSERT_ACCESS_KEY_ID>'
+os.environ['AWS_SECRET_ACCESS_KEY']='<INSERT_SECRET_ACCESS_KEY>'
 
 
 def create_spark_session():
@@ -32,9 +32,15 @@ def format_datetime(ts):
     return datetime.fromtimestamp(ts / 1000.0)
 
 def process_song_data(spark, input_data, output_data):
+    '''
+    Reads in song/artists data from AWS S3.
+    Queries data to create songs_tables and artist_tables.
+    Writes/loads schematized tables as parquet to AWS S3.
+    Partitions songs_table by "year" and "artist_id".
+    '''
     # get filepath to song data file
     # Currently set for local testing
-    song_data = input_data + 'local_song_data/song_data/*/*/*/*.json'
+    song_data = input_data + 'song_data/*/*/*/*.json'
     
     # read song data file
     df = spark.read.json(song_data)
@@ -53,9 +59,15 @@ def process_song_data(spark, input_data, output_data):
 
 
 def process_log_data(spark, input_data, output_data):
+    '''
+    Reads in the log of songs played by users and song library from AWS S3.
+    Queries data to create users_table, time_table, and songplays_table.
+    Writes/loads schematized tables as parquet to AWS S3.
+    Partitions time_table and songplays_table by "year" and "month".
+    '''
     # get filepath to log data file
     # Currently set for local testing.
-    log_data = input_data + '/local_log_data'
+    log_data = input_data + '/log_data'
 
     # read log data file
     df = spark.read.json(log_data)
@@ -93,7 +105,7 @@ def process_log_data(spark, input_data, output_data):
     
   
     # read in song data to use for songplays table
-    song_df = spark.read.json('data/local_song_data/song_data/*/*/*/*.json')
+    song_df = spark.read.json(input_data + 'song_data/*/*/*/*.json')
 
     # create SQL tables.
     df.createOrReplaceTempView('log_data_table')

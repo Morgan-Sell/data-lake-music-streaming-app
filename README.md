@@ -21,7 +21,7 @@ The workflow below is a high-level synopsis of how we migrating from a data ware
 </p>
 
 # Data Lake Design
-The primary change to Sparkify's database management system is that data is distributed across various **worker nodes**, i.e., vCPUs provided by AWS. When designing, training, and deploying ML models, the time required is based on the last node completing its task. Consequently, it is important to allocate or partition the data in an equalized manner. The data allocation should be not skewed.
+The primary change to Sparkify's database management system is that the data is now distributed across various **worker nodes**, i.e., vCPUs provided by AWS. When designing, training, and deploying ML models, the time required is based on the last node completing its task. Consequently, it is important to allocate or partition the data in an equalized manner. The data allocation should be not skewed.
 
 Consequently, we partitioned the following tables by the corresponding attributes:
 
@@ -30,7 +30,7 @@ Consequently, we partitioned the following tables by the corresponding attribute
 - **songsplay_table** - year and month
 
 # Conclusion
-With Sparkify's data lake, the company is now able to focus on developing the most personalized music/media streaming experience available.Users' recommended playlists will incorporate new music as released by artists and Top 100 hits will no longer plug the playlist gaps. Sparkify's recommender system will introduce users to the music they never knew existed and from places of the world that they only know from books and movies.
+With Sparkify's data lake, the company is now able to focus on developing the most personalized music/media streaming experience available. Users' recommended playlists will incorporate new music as released by artists and Top 100 hits will no longer plug the playlist gaps. Sparkify's recommender system will introduce users to the music they never knew existed and from places of the world that they only know from books and movies.
 
 # Packages
 - Configparser
