@@ -14,7 +14,7 @@ from pyspark.sql.types import TimestampType, DateType
 #config.read('dl.cfg')
 
 os.environ['AWS_ACCESS_KEY_ID']='<INSERT_ACCESS_KEY_ID>'
-os.environ['AWS_SECRET_ACCESS_KEY']='<INSERT_SECRET_ACCESS_KEY>'
+os.environ['AWS_SECRET_ACCESS_KEY']='<INSERT_SECRECT_ACCESS_KEY>'
 
 
 def create_spark_session():
@@ -146,7 +146,7 @@ def main():
     # change for local testing.
     # use "s3a://udacity-dend/" when connecting to AWS.
     input_data = "s3a://udacity-dend/"
-    output_data = "s3a://udacity-data-lake-project/"
+    output_data = "s3://udacity-dl-mps/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
