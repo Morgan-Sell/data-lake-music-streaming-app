@@ -13,8 +13,9 @@ from pyspark.sql.types import TimestampType, DateType
 #config = configparser.ConfigParser()
 #config.read('dl.cfg')
 
+
 os.environ['AWS_ACCESS_KEY_ID']='<INSERT_ACCESS_KEY_ID>'
-os.environ['AWS_SECRET_ACCESS_KEY']='<INSERT_SECRECT_ACCESS_KEY>'
+os.environ['AWS_SECRET_ACCESS_KEY']='<INSERT_SECRET_ACCESS_KEY>'
 
 
 def create_spark_session():
@@ -40,7 +41,7 @@ def process_song_data(spark, input_data, output_data):
     '''
     # get filepath to song data file
     # Currently set for local testing
-    song_data = input_data + 'song_data/*/*/*/*.json'
+    song_data = input_data + 'song_data/A/A/A/*.json'
     
     # read song data file
     df = spark.read.json(song_data)
@@ -67,7 +68,7 @@ def process_log_data(spark, input_data, output_data):
     '''
     # get filepath to log data file
     # Currently set for local testing.
-    log_data = input_data + '/log_data'
+    log_data = input_data + '/log_data/*/*/*.json'
 
     # read log data file
     df = spark.read.json(log_data)
@@ -105,7 +106,7 @@ def process_log_data(spark, input_data, output_data):
     
   
     # read in song data to use for songplays table
-    song_df = spark.read.json(input_data + 'song_data/*/*/*/*.json')
+    song_df = spark.read.json(input_data + 'song_data/A/A/A/*.json')
 
     # create SQL tables.
     df.createOrReplaceTempView('log_data_table')
@@ -146,7 +147,7 @@ def main():
     # change for local testing.
     # use "s3a://udacity-dend/" when connecting to AWS.
     input_data = "s3a://udacity-dend/"
-    output_data = "s3://udacity-dl-mps/"
+    output_data = "s3a://udacity-dl-mps/"
     
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
